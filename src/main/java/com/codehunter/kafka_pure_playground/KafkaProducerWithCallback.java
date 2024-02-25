@@ -21,18 +21,20 @@ public class KafkaProducerWithCallback {
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
         properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        try (KafkaProducer<Long, String> producer = new KafkaProducer<>(properties)) {
+        KafkaProducer<Long, String> producer = new KafkaProducer<>(properties);
+        try {
             ProducerRecord<Long, String> message = new ProducerRecord<>("order", System.currentTimeMillis(), "[KafkaProducerWithCallback] My order from java");
             producer.send(message, new Callback() {
                 @Override
                 public void onCompletion(RecordMetadata metadata, Exception exception) {
                     if (exception == null) {
-                        log.info("Metadata: {}", metadata);
+                        log.info("Record with Key:{}, Value:{} was sent to Offset:{}, Partition:{}", message.key(), message.value(), metadata.offset(), metadata.partition());
                     } else {
                         log.error("Exception: {}", exception.getMessage(), exception);
                     }
                 }
             });
+        } finally {
             producer.flush();
             producer.close();
         }
