@@ -40,11 +40,12 @@ public class SimpleKafkaProducer {
         } finally {
             producer.flush();
             producer.close();
+            log.info("after closing producer");
         }
     }
 
     public static void main(String[] args) {
         SimpleKafkaProducer simpleKafkaProducer = new SimpleKafkaProducer();
-        simpleKafkaProducer.send("Refactor message", BOOTSTRAP_SERVER);
+        simpleKafkaProducer.send("Refactor message for kafka consumer", BOOTSTRAP_SERVER);
     }
 }
