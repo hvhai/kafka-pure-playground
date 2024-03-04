@@ -9,6 +9,28 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    val main by getting
+    val test by getting
+
+    val intTest by creating {
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+    }
+}
+
+configurations {
+    val testImplementation by getting
+    val testRuntimeOnly by getting
+
+    "intTestImplementation" {
+        extendsFrom(testImplementation)
+    }
+    "intTestRuntimeOnly" {
+        extendsFrom(testRuntimeOnly)
+    }
+}
+
 dependencies {
 
     // Kafka
