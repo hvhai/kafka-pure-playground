@@ -53,6 +53,22 @@ dependencies {
     testImplementation("org.testcontainers:kafka")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks {
+    test {
+        useJUnitPlatform()
+    }
+
+    val integrationTest by creating(Test::class) {
+        description = "Runs integration tests."
+        group = "integration"
+
+        testClassesDirs = sourceSets["intTest"].output.classesDirs
+        classpath = sourceSets["intTest"].runtimeClasspath
+        useJUnitPlatform()
+    }
+
+    check {
+        dependsOn(integrationTest)
+    }
+
 }
